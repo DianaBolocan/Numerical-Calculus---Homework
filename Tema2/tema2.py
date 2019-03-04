@@ -43,18 +43,28 @@ def get_det_a(lu, size):
 
 def compute_x_lu(size, eps, a, b):
     lu = get_matrix_lu(size, a)
-    x_lu = np.zeros((1, size))
-    y = np.zeros((1, size))
+    x_lu = np.zeros(size)
+    y = np.zeros(size)
     # compute y from L*y = b
     for i in range(size):
-        y[0][i] = (b[i] - np.sum([lu[i][j] * y[0][j] for j in range(i)])) / lu[i][i]
+        y[i] = (b[i] - np.sum([lu[i][j] * y[j] for j in range(i)])) / lu[i][i]
     # compute x_lu from U*x_lu = y
     for i in reversed(range(size)):
-        print(i)
-        x_lu[0][i] = y[0][i] - np.sum([lu[i][j] * y[0][j] for j in range(i+1, size)])
+        x_lu[i] = y[i] - np.sum([lu[i][j] * y[j] for j in range(i+1, size)])
     return x_lu
+
+
+def check_solution(a, b, x_lu):
+    # np.linalg.norm compute Frobenius norm
+    return np.linalg.norm(b - np.reshape(a.dot(x_lu), (len(x_lu), 1)))
 
 
 a = get_matrix_a("matrix_A.txt")
 b = get_matrix_b("matrix_B.txt")
-compute_x_lu(3, 0, a, b)
+x_lu = compute_x_lu(len(b), 0, a, b)
+x = np.reshape(np.linalg.inv(a).dot(b), len(b))
+print("Solution by inversion:", x)
+print("Solution x_lu:", x_lu)
+print("Frobenius norm b - A*x_lu:", check_solution(a, b, x_lu))
+print("Frobenius norm x_lu - x:", np.linalg.norm(x_lu - x))
+print("Frobenius norm x_lu - A^(-1)*b:", np.linalg.norm(x_lu - np.reshape(np.linalg.inv(a).dot(b), len(b))))
