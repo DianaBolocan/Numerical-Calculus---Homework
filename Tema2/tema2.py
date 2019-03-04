@@ -42,10 +42,19 @@ def get_det_a(lu, size):
 
 
 def compute_x_lu(size, eps, a, b):
-    return
+    lu = get_matrix_lu(size, a)
+    x_lu = np.zeros((1, size))
+    y = np.zeros((1, size))
+    # compute y from L*y = b
+    for i in range(size):
+        y[0][i] = (b[i] - np.sum([lu[i][j] * y[0][j] for j in range(i)])) / lu[i][i]
+    # compute x_lu from U*x_lu = y
+    for i in reversed(range(size)):
+        print(i)
+        x_lu[0][i] = y[0][i] - np.sum([lu[i][j] * y[0][j] for j in range(i+1, size)])
+    return x_lu
 
 
 a = get_matrix_a("matrix_A.txt")
 b = get_matrix_b("matrix_B.txt")
-lu = get_matrix_lu(3, a)
-print(get_det_a(lu, 3))
+compute_x_lu(3, 0, a, b)
