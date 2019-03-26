@@ -3,7 +3,7 @@ import copy
 
 
 def to_json(file_name, matrix):
-    with open(file_name + ".json", "w") as fd:
+    with open("./JSON/" + file_name + ".json", "w") as fd:
         fd.write(json.dumps(matrix, indent=4))
 
 
@@ -105,6 +105,19 @@ print("Same Addition:", same_matrices(aplusb, addition))
 print("Same Multiplication:", same_matrices(aorib, matrix_multiplication))
 x = create_x(2019)
 to_json("x", x)
+# a * vector
 vect_multiplication = multiplication(a, x)
-to_json("vect_multiplication", vect_multiplication)
+to_json("vect_multiplication_a", vect_multiplication)
 print("Same vector mutliplication:", same_matrices(vector_a, vect_multiplication))
+# b * vector
+vect_multiplication = multiplication(b, x)
+to_json("vect_multiplication_b", vect_multiplication)
+print("Same vector mutliplication:", same_matrices(vector_b, vect_multiplication))
+# aplusb * vector
+vect_multiplication = multiplication(aplusb, x)
+to_json("vect_multiplication_aplusb", vect_multiplication)
+print("Same vector mutliplication:", same_matrices(vector_aplusb, vect_multiplication))
+# aorib * vector
+vect_multiplication = multiplication(aorib, x)
+to_json("vect_multiplication_aorib", vect_multiplication)
+print("Same vector mutliplication:", same_matrices(vector_aorib, vect_multiplication))
