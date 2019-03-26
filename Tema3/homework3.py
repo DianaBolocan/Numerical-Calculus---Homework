@@ -9,25 +9,26 @@ def to_json(file_name, matrix):
 
 def extract_data(path):
     matrix = dict()
-    vector = list()
+    vector = dict()
     size = None
     with open(path, "r") as fd:
         for input_line in fd:
             if not size:
                 size = int(input_line.strip())
-            input_line = input_line.strip().split(", ")
-            if len(input_line) == 3:
-                line = int(input_line[1])
-                column = int(input_line[2])
-                value = float(input_line[0])
-                if line not in matrix.keys():
-                    matrix[line] = {column: value}
-                elif column not in matrix[line].keys():
-                    matrix[line][column] = value
-                else:
-                    matrix[line][column] += value
-            elif input_line[0]:
-                vector.append(float(input_line[0]))
+            else:
+                input_line = input_line.strip().split(", ")
+                if len(input_line) == 3:
+                    line = int(input_line[1])
+                    column = int(input_line[2])
+                    value = float(input_line[0])
+                    if line not in matrix.keys():
+                        matrix[line] = {column: value}
+                    elif column not in matrix[line].keys():
+                        matrix[line][column] = value
+                    else:
+                        matrix[line][column] += value
+                elif input_line[0]:
+                    vector[len(vector.keys())] = {0: float(input_line[0])}
     return matrix, vector
 
 
@@ -75,6 +76,13 @@ def same_matrices(a, b):
     return True
 
 
+def create_x(size):
+    x = dict()
+    for line in range(size):
+        x[line] = {0: size - line}
+    return x
+
+
 a, vector_a = extract_data("a.txt")
 b, vector_b = extract_data("b.txt")
 aplusb, vector_aplusb = extract_data("aplusb.txt")
@@ -82,12 +90,21 @@ aorib, vector_aorib = extract_data("aorib.txt")
 # a better visualisation of rare matrices
 to_json("a", a)
 to_json("b", b)
+to_json("vector_a", vector_a)
+to_json("vector_b", vector_b)
 to_json("aplusb", aplusb)
 to_json("aorib", aorib)
+to_json("vector_aorib", vector_aorib)
+to_json("vector_aplusb", vector_aplusb)
 # a + b
 addition = addition(a, b)
-multiplication = multiplication(a, b)
+matrix_multiplication = multiplication(a, b)
 to_json("addition", addition)
-to_json("multiplication", multiplication)
-print(same_matrices(aplusb, addition))
-print(same_matrices(aorib, multiplication))
+to_json("multiplication", matrix_multiplication)
+print("Same Addition:", same_matrices(aplusb, addition))
+print("Same Multiplication:", same_matrices(aorib, matrix_multiplication))
+x = create_x(2019)
+to_json("x", x)
+vect_multiplication = multiplication(a, x)
+to_json("vect_multiplication", vect_multiplication)
+print("Same vector mutliplication:", same_matrices(vector_a, vect_multiplication))
