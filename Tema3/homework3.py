@@ -47,9 +47,16 @@ def addition(a, b):
 
 def multiplication(a, b):
     result = dict()
-    for line in a.keys():
-        for column in a[line].keys():
-
+    for line_a in a.keys():
+        for column_a in a[line_a].keys():
+            if column_a in b.keys():
+                for column_b in b[column_a].keys():
+                    if line_a not in result.keys():
+                        result[line_a] = {column_b: a[line_a][column_a] * b[column_a][column_b]}
+                    elif column_b not in result[line_a].keys():
+                        result[line_a][column_b] = a[line_a][column_a] * b[column_a][column_b]
+                    else:
+                        result[line_a][column_b] += a[line_a][column_a] * b[column_a][column_b]
     return result
 
 
@@ -80,8 +87,7 @@ to_json("aorib", aorib)
 # a + b
 addition = addition(a, b)
 multiplication = multiplication(a, b)
-print(aorib)
-# to_json("aplusb", addition)
-# to_json("aorib", multiplication)
-# print(same_matrices(aplusb, addition))
-# print(same_matrices(aorib, multiplication))
+to_json("addition", addition)
+to_json("multiplication", multiplication)
+print(same_matrices(aplusb, addition))
+print(same_matrices(aorib, multiplication))
