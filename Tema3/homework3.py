@@ -8,6 +8,10 @@ def to_json(file_name, matrix):
 
 
 def extract_data(path):
+    """
+    :param path: String
+    :return: rare matrix as dict(dict), vector as dict(dict)
+    """
     matrix = dict()
     vector = dict()
     size = None
@@ -29,7 +33,7 @@ def extract_data(path):
                         matrix[line][column] += value
                 elif input_line[0]:
                     vector[len(vector.keys())] = {0: float(input_line[0])}
-    return matrix, vector
+    return matrix, vector, size
 
 
 def addition(a, b):
@@ -76,48 +80,52 @@ def same_matrices(a, b):
     return True
 
 
-def create_x(size):
+def create_x(size, value=None):
     x = dict()
     for line in range(size):
-        x[line] = {0: size - line}
+        if value:
+            x[line] = {0: value}
+        else:
+            x[line] = {0: size - line}
     return x
 
 
-a, vector_a = extract_data("a.txt")
-b, vector_b = extract_data("b.txt")
-aplusb, vector_aplusb = extract_data("aplusb.txt")
-aorib, vector_aorib = extract_data("aorib.txt")
-# a better visualisation of rare matrices
-to_json("a", a)
-to_json("b", b)
-to_json("vector_a", vector_a)
-to_json("vector_b", vector_b)
-to_json("aplusb", aplusb)
-to_json("aorib", aorib)
-to_json("vector_aorib", vector_aorib)
-to_json("vector_aplusb", vector_aplusb)
-# a + b
-addition = addition(a, b)
-matrix_multiplication = multiplication(a, b)
-to_json("addition", addition)
-to_json("multiplication", matrix_multiplication)
-print("Same Addition:", same_matrices(aplusb, addition))
-print("Same Multiplication:", same_matrices(aorib, matrix_multiplication))
-x = create_x(2019)
-to_json("x", x)
-# a * vector
-vect_multiplication = multiplication(a, x)
-to_json("vect_multiplication_a", vect_multiplication)
-print("Same vector mutliplication:", same_matrices(vector_a, vect_multiplication))
-# b * vector
-vect_multiplication = multiplication(b, x)
-to_json("vect_multiplication_b", vect_multiplication)
-print("Same vector mutliplication:", same_matrices(vector_b, vect_multiplication))
-# aplusb * vector
-vect_multiplication = multiplication(aplusb, x)
-to_json("vect_multiplication_aplusb", vect_multiplication)
-print("Same vector mutliplication:", same_matrices(vector_aplusb, vect_multiplication))
-# aorib * vector
-vect_multiplication = multiplication(aorib, x)
-to_json("vect_multiplication_aorib", vect_multiplication)
-print("Same vector mutliplication:", same_matrices(vector_aorib, vect_multiplication))
+if __name__ == '__main__':
+    a, vector_a, size_a = extract_data("a.txt")
+    b, vector_b, size_b = extract_data("b.txt")
+    aplusb, vector_aplusb, size_aplusb = extract_data("aplusb.txt")
+    aorib, vector_aorib, size_aorib = extract_data("aorib.txt")
+    # a better visualisation of rare matrices
+    to_json("a", a)
+    to_json("b", b)
+    to_json("vector_a", vector_a)
+    to_json("vector_b", vector_b)
+    to_json("aplusb", aplusb)
+    to_json("aorib", aorib)
+    to_json("vector_aorib", vector_aorib)
+    to_json("vector_aplusb", vector_aplusb)
+    # a + b
+    addition = addition(a, b)
+    matrix_multiplication = multiplication(a, b)
+    to_json("addition", addition)
+    to_json("multiplication", matrix_multiplication)
+    print("Same Addition:", same_matrices(aplusb, addition))
+    print("Same Multiplication:", same_matrices(aorib, matrix_multiplication))
+    x = create_x(size_a)
+    to_json("x", x)
+    # a * vector
+    vect_multiplication = multiplication(a, x)
+    to_json("vect_multiplication_a", vect_multiplication)
+    print("Same vector mutliplication:", same_matrices(vector_a, vect_multiplication))
+    # b * vector
+    vect_multiplication = multiplication(b, x)
+    to_json("vect_multiplication_b", vect_multiplication)
+    print("Same vector mutliplication:", same_matrices(vector_b, vect_multiplication))
+    # aplusb * vector
+    vect_multiplication = multiplication(aplusb, x)
+    to_json("vect_multiplication_aplusb", vect_multiplication)
+    print("Same vector mutliplication:", same_matrices(vector_aplusb, vect_multiplication))
+    # aorib * vector
+    vect_multiplication = multiplication(aorib, x)
+    to_json("vect_multiplication_aorib", vect_multiplication)
+    print("Same vector mutliplication:", same_matrices(vector_aorib, vect_multiplication))
