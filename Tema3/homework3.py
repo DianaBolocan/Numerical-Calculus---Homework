@@ -83,7 +83,7 @@ def same_matrices(a, b):
 def create_x(size, value=None):
     x = dict()
     for line in range(size):
-        if value:
+        if value is not None:
             x[line] = {0: value}
         else:
             x[line] = {0: size - line}
