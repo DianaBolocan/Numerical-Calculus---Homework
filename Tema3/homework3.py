@@ -33,7 +33,7 @@ def extract_data(path):
                         matrix[line][column] = value
                     else:
                         matrix[line][column] += value
-                        if matrix[line][column]<epsilon:
+                        if abs(matrix[line][column])<epsilon:
                             matrix[line].pop(column)
                             if len(matrix[line].keys())==0:
                                 matrix.pop(line)
@@ -53,7 +53,7 @@ def addition(a, b):
                     result[line][column] = b[line][column]
                 else:
                     result[line][column] += b[line][column]
-                    if result[line][column] < epsilon:
+                    if abs(result[line][column]) < epsilon:
                         result[line].pop(column)
                         if len(result[line].keys()) == 0:
                             result.pop(line)
@@ -72,7 +72,7 @@ def multiplication(a, b):
                         result[line_a][column_b] = a[line_a][column_a] * b[column_a][column_b]
                     else:
                         result[line_a][column_b] += a[line_a][column_a] * b[column_a][column_b]
-                        if result[line_a][column_b] < epsilon:
+                        if abs(result[line_a][column_b]) < epsilon:
                             result[line_a].pop(column_b)
                             if len(result[line_a].keys()) == 0:
                                 result.pop(line_a)
