@@ -2,6 +2,8 @@ import json
 import copy
 
 
+epsilon=10**-14
+
 def to_json(file_name, matrix):
     with open("./JSON/" + file_name + ".json", "w") as fd:
         fd.write(json.dumps(matrix, indent=4))
@@ -31,6 +33,10 @@ def extract_data(path):
                         matrix[line][column] = value
                     else:
                         matrix[line][column] += value
+                        if matrix[line][column]<epsilon:
+                            matrix[line].pop(column)
+                            if len(matrix[line].keys())==0:
+                                matrix.pop(line)
                 elif input_line[0]:
                     vector[len(vector.keys())] = {0: float(input_line[0])}
     return matrix, vector, size
@@ -47,6 +53,10 @@ def addition(a, b):
                     result[line][column] = b[line][column]
                 else:
                     result[line][column] += b[line][column]
+                    if result[line][column] < epsilon:
+                        result[line].pop(column)
+                        if len(result[line].keys()) == 0:
+                            result.pop(line)
     return result
 
 
@@ -56,12 +66,16 @@ def multiplication(a, b):
         for column_a in a[line_a].keys():
             if column_a in b.keys():
                 for column_b in b[column_a].keys():
-                    if line_a not in result.keys():
+                    if line_a not in result.keys() and a[line_a][column_a] * b[column_a][column_b] > epsilon:
                         result[line_a] = {column_b: a[line_a][column_a] * b[column_a][column_b]}
-                    elif column_b not in result[line_a].keys():
+                    elif column_b not in result[line_a].keys() and a[line_a][column_a] * b[column_a][column_b] > epsilon:
                         result[line_a][column_b] = a[line_a][column_a] * b[column_a][column_b]
                     else:
                         result[line_a][column_b] += a[line_a][column_a] * b[column_a][column_b]
+                        if result[line_a][column_b] < epsilon:
+                            result[line_a].pop(column_b)
+                            if len(result[line_a].keys()) == 0:
+                                result.pop(line_a)
     return result
 
 
