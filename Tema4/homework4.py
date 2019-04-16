@@ -3,12 +3,6 @@ import math
 import copy
 
 
-def format_x_sor(x_sor, size):
-    for line in range(size, 2*size):
-        del x_sor[line]
-    return x_sor
-
-
 def infinity_norm(x):
     """
     Compute infinity norm of x.
@@ -44,22 +38,17 @@ def get_x_sor(a, b, size, check_det, omega, max_iterations=1000, epsilon=pow(10,
         return None
     ok = False
     iterations = 0
-    x_sor = homework3.create_x(2 * size, 0)
+    x_sor = homework3.create_x(size, 0)
     norm = 0
     while iterations < max_iterations:
         norm = 0
         for line in range(size):
-            sum_1 = 0
-            sum_2 = 0
-            x_sor[line][0] += x_sor[line + size][0]
+            sums = 0
+            save = x_sor[line][0]
             for column in a[line].keys():
-                if column < line:
-                    sum_1 += a[line][column] * x_sor[column][0]
-                else:
-                    sum_2 += a[line][column] * x_sor[column + size][0]
-            x_sor[line][0] += (omega / a[line][line]) * (b[line][0] - sum_1 - sum_2)
-            norm += pow(x_sor[line][0] - x_sor[line + size][0], 2)
-            x_sor[line + size][0] = copy.deepcopy(x_sor[line][0])
+                sums += a[line][column] * x_sor[column][0]
+            x_sor[line][0] += (omega / a[line][line]) * (b[line][0] - sums)
+            norm += pow(x_sor[line][0] - save, 2)
         norm = math.sqrt(norm)
         if norm < epsilon:
             break
@@ -97,8 +86,12 @@ if __name__ == '__main__':
                                                                                              index + 1, index + 1,
                                                                                              index + 1,
                                                                                              omegas[index_omegas]))
-            exec("if True in result_{}: print(infinity_norm(homework3.subtraction(homework3.multiplication(matrix_{}, "
-                 "format_x_sor(result_{}[0], size_{})), vector_{})))".format(index_omegas, index + 1, index_omegas,
-                                                                            index + 1, index + 1))
+            exec("if True in result_{}: print('Norm check:', infinity_norm(homework3.subtraction("
+                 "homework3.multiplication(matrix_{}, result_{}[0]), vector_{})))".format(index_omegas, index + 1,
+                                                                                          index_omegas, index + 1))
+            exec("if True in result_{}: homework3.to_json(\"result_{}_{}\", result_{}[0])".format(index_omegas,
+                                                                                                  index + 1,
+                                                                                                  index_omegas + 1,
+                                                                                                  index_omegas))
         print("-----------------------------------------------------------------------------------")
         input()
