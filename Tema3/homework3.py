@@ -50,6 +50,20 @@ def addition(a, b):
     return result
 
 
+def subtraction(a, b):
+    result = copy.deepcopy(a)
+    for line in b.keys():
+        if line not in result.keys():
+            result[line] = b[line]
+        else:
+            for column in b[line].keys():
+                if column not in result[line].keys():
+                    result[line][column] = b[line][column]
+                else:
+                    result[line][column] -= b[line][column]
+    return result
+
+
 def multiplication(a, b):
     result = dict()
     for line_a in a.keys():
