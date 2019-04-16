@@ -1,6 +1,5 @@
 from Homework3 import homework3
 import math
-import copy
 
 
 def infinity_norm(x):
