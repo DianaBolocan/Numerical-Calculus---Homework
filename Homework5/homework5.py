@@ -2,6 +2,15 @@ import copy
 import math
 from Homework3 import homework3
 import random
+import numpy
+
+
+def generate_matrix(lines=50, columns=10, stop=11, start=1):
+    matrix = list()
+    for index in range(lines * columns):
+        matrix.append(random.randrange(start=start, stop=stop))
+    matrix = numpy.array(matrix).reshape((lines, columns))
+    return matrix
 
 
 def multiplication(matrix, vector):
@@ -66,10 +75,19 @@ def coefficient_multiplication(coefficient, vector):
     return result
 
 
+def moore_penrose(u, s, v):
+    si = numpy.zeros((len(v), len(u)))
+    for index in range(len(s)):
+        si[index][index] = 1 / s[index]
+    matrix = numpy.dot(v, si)
+    matrix = numpy.dot(matrix, u.T)
+    return matrix
+
+
 def power_method(matrix, size, epsilon=pow(10, -9), iterations=1000000):
     if not is_symmetric(matrix):
-        print("[ERROR]: Given matrix is not symmetric. Returning None.")
-        return None
+        print("Given matrix is not symmetric.")
+        # return None
     u = homework3.create_x(size, 0)
     u[0][0] = 1
     w = multiplication(matrix, u)
@@ -82,6 +100,19 @@ def power_method(matrix, size, epsilon=pow(10, -9), iterations=1000000):
         lambda_value = scalar_product(w, u)
         iteration += 1
     return lambda_value
+
+
+def singular_value_decomposition(matrix, vector):
+    u, s, v = numpy.linalg.svd(matrix)
+    print("Singular values: {}".format(s))
+    print("Matrix rang: {}".format(sum([1 for number in s if number > 0])))
+    print("Conditioning number: {}".format(
+        max([number for number in s if number > 0]) / min([number for number in s if number > 0])))
+    pseudo_inverse = moore_penrose(u, s, v)
+    pseudo_x = numpy.dot(pseudo_inverse, vector)
+    print("Pseudo x: {}.".format(pseudo_x))
+    print("Norm: {}".format(numpy.linalg.norm(vector - numpy.dot(matrix, pseudo_x))))
+    return
 
 
 if __name__ == '__main__':
@@ -99,8 +130,12 @@ if __name__ == '__main__':
     homework3.to_json("matrix_1000", matrix_1000)
     homework3.to_json("matrix_1500", matrix_1500)
     homework3.to_json("matrix_2019", matrix_2019)
-    # compute lambda for each matrix
+    # compute lambda for each matrix (power_method)
     print(power_method(matrix_500, size_500))
     print(power_method(matrix_1000, size_1000))
     print(power_method(matrix_1500, size_1500))
     print(power_method(matrix_2019, size_2019))
+    # generate random matrix
+    random_matrix = generate_matrix(lines=5, columns=10)
+    random_vector = generate_matrix(lines=5, columns=1)
+    singular_value_decomposition(random_matrix, random_vector)
