@@ -8,7 +8,7 @@ def compute_polynomial(coefficients, value):
     :param coefficients: vector of coefficients. ex: [3, 2, 1, 0] for polynomial function
     f(x) = 3*(x**3) + 2*(x**2) + 1*(x**1) + 0*(x**0)
     :param value: number
-    :return result: the result of polynomial function f(x) in with x = value
+    :return result: the result of polynomial function f(x) in which x = value
     """
     result = None
     for coefficient in coefficients:
@@ -51,6 +51,13 @@ def to_square(coefficients):
 
 
 def derive(coefficients):
+    """
+    Applies one derivation of given coefficients list of polynomial function.
+    :param coefficients: polynomial function represented as a coefficients list
+    :return coefficients: the new derived polynomial function represented as a coefficients list
+    """
+    if not coefficients:
+        return None
     for index in range(len(coefficients)):
         coefficients[index] = coefficients[index] * (len(coefficients) - index - 1)
     coefficients.pop(-1)
