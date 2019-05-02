@@ -1,6 +1,26 @@
 import random
 
 
+def read_coeffiecients_from_file(path):
+    """
+    Reads a file with path given and returns a list of coefficients. First coefficient is considered to be the
+    coefficient of the largest number (?).
+    :param path: string, representing the path to the file
+    :return coefficients: a list of coefficients from a polynomial function
+    """
+    coefficients = list()
+    with open(path, "r") as fd:
+        for coefficient in fd:
+            try:
+                coefficients.append(float(coefficient.strip()))
+            except Exception as e:
+                # print(e)
+                pass
+    if not coefficients:
+        coefficients.append(0)
+    return coefficients
+
+
 def compute_polynomial(coefficients, value):
     """
     Horner's method of computation for polynomial functions.
@@ -80,4 +100,5 @@ def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
 
 
 if __name__ == '__main__':
+    # print(read_coeffiecients_from_file("function_1.txt"))
     halley_method(generate_polynomial_coefficients())
