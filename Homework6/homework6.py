@@ -1,3 +1,4 @@
+import copy
 import random
 
 
@@ -78,27 +79,44 @@ def derive(coefficients):
     """
     if not coefficients:
         return None
-    for index in range(len(coefficients)):
-        coefficients[index] = coefficients[index] * (len(coefficients) - index - 1)
-    coefficients.pop(-1)
-    return coefficients
+    new_coefficients = copy.deepcopy(coefficients)
+    for index in range(len(new_coefficients)):
+        new_coefficients[index] = new_coefficients[index] * (len(new_coefficients) - index - 1)
+    new_coefficients.pop(-1)
+    return new_coefficients
 
 
 def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
     print("Coefficients:", coefficients)
     r = (abs(coefficients[0]) + max([abs(coefficient) for coefficient in coefficients])) / abs(coefficients[0])
     print("Interval: [{}, {}]".format(-r, r))
-    x = random.randrange(start=-r, stop=r)
+    x = random.uniform(-r, r)
     iteration = 1
     while iteration <= iterations:
+        print("Value of x:", x)
         first_derivate = derive(coefficients)
         second_derivate = derive(first_derivate)
-        result_in_x = compute_polynomial(coefficients, x)
-
+        x_iter = x - 1 / (compute_polynomial(first_derivate, x) / compute_polynomial(coefficients, x) - (
+                compute_polynomial(second_derivate, x) / 2 * compute_polynomial(first_derivate, x)))
+        a = 2 * (compute_polynomial(first_derivate, x) ** 2) - (
+                compute_polynomial(coefficients, x_iter) * compute_polynomial(second_derivate, x))
+        if abs(a) < epsilon:
+            print("[ERROR]: A is lower than epsilon. {} < {}".format(a, epsilon))
+            break
+        delta = compute_polynomial(coefficients, x) * compute_polynomial(first_derivate, x) / a
+        if abs(delta) < epsilon or abs(delta) > pow(10, 8):
+            print("[EVALUATING]: Delta out of boundaries. Value of delta {}.".format(delta))
+            break
+        x -= delta
         iteration += 1
-    return
+    if abs(delta) < epsilon:
+        print("[OKAY]: Everything is okay. Returning value of x.")
+        return x
+    print("[ERROR]: Divergence. Pick another value for x to start. Return None.")
+    return None
 
 
 if __name__ == '__main__':
     # print(read_coeffiecients_from_file("function_1.txt"))
-    halley_method(generate_polynomial_coefficients())
+    # halley_method(generate_polynomial_coefficients())
+    print(halley_method([1, -6, 11, -6]))
