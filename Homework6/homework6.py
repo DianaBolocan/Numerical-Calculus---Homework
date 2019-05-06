@@ -86,6 +86,29 @@ def derive(coefficients):
     return new_coefficients
 
 
+def division_algorithm(first_polynomial, second_polynomial):
+    """
+    Returns the quotient and reminder of the division between first and second polynomials.
+    :param first_polynomial: a polynomial function with the degree greater or equal to the second polynomial function,
+    represented as a vector of coefficients
+    :param second_polynomial: a polynomial function with the degree lesser or equal to the dirst polynomial function,
+    represented as a vector of coefficient
+    :return quotient, reminder: quotient and reminder of the division, returns None, None if requirements are not
+    reached
+    """
+    if not first_polynomial or not second_polynomial or len(first_polynomial) < len(second_polynomial):
+        print("[ERROR]: Requirements are not reached.")
+        return None, None
+    quotient = [0 for index in range(len(first_polynomial) - len(second_polynomial))]
+    polynomial = copy.deepcopy(first_polynomial)
+    index = 0
+    while len(polynomial) >= len(second_polynomial):
+        quotient[index] = polynomial[0] / second_polynomial[0]
+        # polynomial = [(-1 * quotient[index] * second_polynomial[index_2]) for index_2 in range(len(second_polynomial))]
+        index += 1
+    return quotient, polynomial
+
+
 def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
     print("Coefficients:", coefficients)
     r = (abs(coefficients[0]) + max([abs(coefficient) for coefficient in coefficients])) / abs(coefficients[0])
@@ -117,6 +140,5 @@ def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
 
 
 if __name__ == '__main__':
-    # print(read_coeffiecients_from_file("function_1.txt"))
-    # halley_method(generate_polynomial_coefficients())
-    print(halley_method([1, -6, 11, -6]))
+    # print(halley_method([1, -6, 11, -6]))
+    print(division_algorithm([1, 7, 6], [1, -5, -6]))
