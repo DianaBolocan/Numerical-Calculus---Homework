@@ -93,30 +93,46 @@ def division_algorithm(first_polynomial, second_polynomial):
     represented as a vector of coefficients
     :param second_polynomial: a polynomial function with the degree lesser or equal to the dirst polynomial function,
     represented as a vector of coefficient
-    :return quotient, reminder: quotient and reminder of the division, returns None, None if requirements are not
+    :return quotient, reminder: quotient and reminder of the division, returns None if requirements are not
     reached
     """
     if not first_polynomial or not second_polynomial or len(first_polynomial) < len(second_polynomial):
         print("[ERROR]: Requirements are not reached.")
-        return None, None
-    quotient = [0 for index in range(len(first_polynomial) - len(second_polynomial))]
+        return None
+    quotient = [0 for index in range(len(first_polynomial) - len(second_polynomial) + 1)]
     polynomial = copy.deepcopy(first_polynomial)
     index = 0
-    while len(polynomial) >= len(second_polynomial):
-        quotient[index] = polynomial[0] / second_polynomial[0]
-        # polynomial = [(-1 * quotient[index] * second_polynomial[index_2]) for index_2 in range(len(second_polynomial))]
+    while index < len(quotient):
+        quotient[index] = polynomial[index] / second_polynomial[0]
+        for index_poly in range(len(second_polynomial)):
+            polynomial[index + index_poly] -= quotient[index] * second_polynomial[index_poly]
         index += 1
+    polynomial = [number for number in polynomial if number]
+    if not polynomial:
+        polynomial.append(0)
     return quotient, polynomial
 
 
+def gcd(first_polynomial, second_polynomial):
+    print("first_polynomial:", first_polynomial)
+    print("second_polynomial:", second_polynomial)
+    quotient, reminder = division_algorithm(first_polynomial, second_polynomial)
+    print("quotient = {}\nreminder= {}".format(quotient, reminder))
+    if len(reminder) == 1 and reminder[0] == 0:
+        # leading_coefficient = first_polynomial[0]
+        # first_polynomial = [number / leading_coefficient for number in first_polynomial]
+        return first_polynomial
+    return gcd(second_polynomial, reminder)
+
+
 def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
-    print("Coefficients:", coefficients)
+    # print("Coefficients:", coefficients)
     r = (abs(coefficients[0]) + max([abs(coefficient) for coefficient in coefficients])) / abs(coefficients[0])
-    print("Interval: [{}, {}]".format(-r, r))
+    # print("Interval: [{}, {}]".format(-r, r))
     x = random.uniform(-r, r)
     iteration = 1
     while iteration <= iterations:
-        print("Value of x:", x)
+        # print("Value of x:", x)
         first_derivate = derive(coefficients)
         second_derivate = derive(first_derivate)
         x_iter = x - 1 / (compute_polynomial(first_derivate, x) / compute_polynomial(coefficients, x) - (
@@ -139,6 +155,35 @@ def halley_method(coefficients, iterations=1000, epsilon=pow(10, -10)):
     return None
 
 
+def compute_roots(coefficients, epsilon=pow(10, -10)):
+    roots = list()
+    # here should be introduced the simplification part
+    while len(roots) != len(coefficients) - 1:
+        result = halley_method(coefficients)
+        while not result:
+            result = halley_method(coefficients)
+        if not roots:
+            roots.append(result)
+        else:
+            check = True
+            for root in roots:
+                if abs(root - result) < epsilon:
+                    chekc = False
+            if check:
+                roots.append(result)
+    with open("result.txt","a") as fd:
+        fd.write(str(roots)+"\n")
+    return
+
+
 if __name__ == '__main__':
     # print(halley_method([1, -6, 11, -6]))
-    print(division_algorithm([1, 7, 6], [1, -5, -6]))
+    # print(halley_method([1, -6, 13, -12, 4]))
+    # print(division_algorithm([1, -2, 0, -4], [1, -3]))
+    # print(division_algorithm([1, 7, 6], [1, -5, -6]))
+    # print(gcd([1, -6, 13, -12, 4], derive([1, -6, 13, -12, 4])))
+    # print(gcd([1, -6, 11, -6], derive([1, -6, 11, -6])))
+    compute_roots([1, -6, 11, -6])
+    compute_roots([42, -55, -42, 49, -6])
+    compute_roots([8, -38, 49, -22, 3])
+    compute_roots([1, -6, 13, -12, 4])
