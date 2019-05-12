@@ -168,11 +168,11 @@ def compute_roots(coefficients, epsilon=pow(10, -10)):
             check = True
             for root in roots:
                 if abs(root - result) < epsilon:
-                    chekc = False
+                    check = False
             if check:
                 roots.append(result)
-    with open("result.txt","a") as fd:
-        fd.write(str(roots)+"\n")
+    with open("result.txt", "a") as fd:
+        fd.write(str(roots) + "\n")
     return
 
 
@@ -183,6 +183,8 @@ if __name__ == '__main__':
     # print(division_algorithm([1, 7, 6], [1, -5, -6]))
     # print(gcd([1, -6, 13, -12, 4], derive([1, -6, 13, -12, 4])))
     # print(gcd([1, -6, 11, -6], derive([1, -6, 11, -6])))
+    with open("result.txt", "w") as fd:
+        fd.write("")
     compute_roots([1, -6, 11, -6])
     compute_roots([42, -55, -42, 49, -6])
     compute_roots([8, -38, 49, -22, 3])
