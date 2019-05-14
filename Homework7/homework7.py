@@ -96,7 +96,8 @@ def construct_h(function_data: tuple):
             result[index + 1][index] = h_current
             result[index][index + 1] = h_current
         h_previous = h_current
-    result[size - 1][size - 1] = 2 * (function_data[0][-1] - function_data[0][-2] + h_previous)
+    result[size - 1][size - 1] = 2 * (function_data[0][-1] - function_data[0][-2])
+    result[0][0] = 2 * (function_data[0][1] - function_data[0][0])
     return result
 
 
@@ -105,7 +106,9 @@ def spline_function(value, function_data: tuple, derivate_in_a, derivate_in_b):
         print("[ERROR]: Value not in interval [{},{}]".format(function_data[0][-1], function_data[0][-1]))
         return None
     h = construct_h(function_data)
+    print(h)
     f = construct_f(function_data, derivate_in_a, derivate_in_b)
+    print(f)
     a = lu.compute_x_lu(len(f), h, f)
     # print(numpy.linalg.solve(h, f))
     print("A:{}".format(a))
@@ -144,3 +147,6 @@ if __name__ == '__main__':
     print(interpolation("test.txt"))
     print(interpolation("newton.txt"))
     print(interpolation("spline.txt"))
+    print(interpolation("spline2.txt"))
+    print(interpolation("spline3.txt"))
+    print(interpolation("spline4.txt"))
