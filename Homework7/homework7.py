@@ -2,6 +2,9 @@ import copy
 import numpy
 from Homework2 import tema2 as lu
 
+global epsilon
+epsilon = pow(10, -6)
+
 
 def get_input(path=None):
     values = list()
@@ -104,6 +107,7 @@ def spline_function(value, function_data: tuple, derivate_in_a, derivate_in_b):
     h = construct_h(function_data)
     f = construct_f(function_data, derivate_in_a, derivate_in_b)
     a = lu.compute_x_lu(len(f), h, f)
+    # print(numpy.linalg.solve(h, f))
     print("A:{}".format(a))
     # find the spline function that the value fits in
     # find upper limit index
@@ -120,7 +124,7 @@ def spline_function(value, function_data: tuple, derivate_in_a, derivate_in_b):
     result = pow((value - bottom_x), 3) * a[top] / (6 * distance) + pow((top_x - value), 3) * a[bottom] / (
                 6 * distance) + ((top_y - bottom_y) / distance - (distance * (a[top] - a[bottom]) / 6)) * value + (
                          (top_x * bottom_y) - (bottom_x * top_y)) / distance - distance * (
-                         (top_x * a[bottom]) - (bottom_x - a[top])) / 6
+                         (top_x * a[bottom]) - (bottom_x * a[top])) / 6
     return result
 
 
@@ -129,10 +133,14 @@ def interpolation(path: str):
     print("Computing numerical interpolation for value: {}\nExpected value: {}".format(value, result_value))
     if derivate_in_a and derivate_in_b:
         interpolation_result = spline_function(value, (values, results), derivate_in_a, derivate_in_b)
+        print("Norma: {} < {}. {}".format(abs(interpolation_result - result_value), epsilon, abs(interpolation_result - result_value)<epsilon))
     else:
         interpolation_result = newton_form(value, (values, results))
+        print("Norma: {} < {}. {}".format(abs(interpolation_result - result_value), epsilon, abs(interpolation_result - result_value)<epsilon))
     return interpolation_result
 
 
 if __name__ == '__main__':
+    print(interpolation("test.txt"))
+    print(interpolation("newton.txt"))
     print(interpolation("spline.txt"))
