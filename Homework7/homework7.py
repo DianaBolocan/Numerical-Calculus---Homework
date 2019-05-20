@@ -106,9 +106,7 @@ def spline_function(value, function_data: tuple, derivate_in_a, derivate_in_b):
         print("[ERROR]: Value not in interval [{},{}]".format(function_data[0][-1], function_data[0][-1]))
         return None
     h = construct_h(function_data)
-    print(h)
     f = construct_f(function_data, derivate_in_a, derivate_in_b)
-    print(f)
     a = lu.compute_x_lu(len(f), h, f)
     # print(numpy.linalg.solve(h, f))
     print("A:{}".format(a))
