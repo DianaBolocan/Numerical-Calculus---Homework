@@ -1,4 +1,9 @@
 from Homework6 import homework6 as poly
+# Hey,
+#
+# I'm aware you're checking out my homework.
+# Yes, they are public on purpose.
+# You're welcome. :)
 
 
 def get_input(path):
