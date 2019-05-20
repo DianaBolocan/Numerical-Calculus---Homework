@@ -6,4 +6,4 @@
   5. Aproximarea valorilor şi vectorilor proprii, descompunerea după valori singulare (SVD)
   6. Aproximarea rădăcinilor  polinoamelor
   7. Interpolare numerică
-  8. TBA
+  8. Minimizarea funcțiilor
