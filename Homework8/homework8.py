@@ -69,9 +69,13 @@ def compute_delta_x(value, function):
     :param function: vector of floats
     :return delta_x: number
     """
-    s = (approximate_first_derivate(value + approximate_first_derivate(value, function), function) -
-         approximate_first_derivate(value, function)) / approximate_first_derivate(value, function)
-    delta_x = approximate_first_derivate(value, function) / s
+    # s ends up being a very small value and it's considered 0
+    try:
+        delta_x = (approximate_first_derivate(value, function) ** 2) / (
+                approximate_first_derivate(value + approximate_first_derivate(value, function),
+                                           function) - approximate_first_derivate(value, function))
+    except Exception:
+        return pow(10, 9)
     return delta_x
 
 
@@ -81,26 +85,40 @@ def steffensen_method(path, max_iterations=1000, interval=10000):
     x_previous = random.randint(a=-interval, b=interval)
     x_current = x_previous
     if abs(approximate_first_derivate(x_current, function)) <= epsilon:
-        return x_current, abs(x_current - expected_output)
+        return x_current, [abs(x_current - output) for output in expected_output]
     delta_x = compute_delta_x(x_previous, function)
     if abs(delta_x) < epsilon:
-        return x_current, abs(x_current - expected_output)
+        return x_current, [abs(x_current - output) for output in expected_output]
     if abs(delta_x) > pow(10, 8):
         return "Divergence"
     x_current -= delta_x
     while epsilon <= abs(delta_x) <= pow(10, 8) and iteration <= max_iterations:
         if abs(approximate_first_derivate(x_current, function)) <= epsilon:
-            return x_current, abs(x_current - expected_output)
+            return x_current, [abs(x_current - output) for output in expected_output]
         delta_x = compute_delta_x(x_previous, function)
         x_previous = x_current
         x_current -= delta_x
         iteration += 1
+    if iteration > max_iterations:
+        return "Reached maximum iterations"
     if abs(delta_x) < epsilon:
-        return x_current, abs(x_current - expected_output)
+        return x_current, [abs(x_current - output) for output in expected_output]
     return "Divergence"
+
+
+def run_until_result(path):
+    result = steffensen_method(path)
+    iteration = 0
+    while result != "Divergence" or iteration < 1000:
+        result = steffensen_method(path)
+        iteration += 1
+    return result
 
 
 if __name__ == '__main__':
     print("Minimum of a function")
     print(steffensen_method("input1.txt"))
+    # print(run_until_result("input1.txt"))
+    # no matter how many times it computes, results in Divergence -> generated number is too far away from expected
+    # output
     print(steffensen_method("input2.txt"))
