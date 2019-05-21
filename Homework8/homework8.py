@@ -42,11 +42,11 @@ def approximate_first_derivate(value, function, h=pow(10, -5), method=1):
     result = None
     if method == 1:
         result = (3 * poly.compute_polynomial(function, value) - 4 * poly.compute_polynomial(function, value - h) +
-                  poly.compute_polynomial(function, value - 2 * h)) / 2 * h
+                  poly.compute_polynomial(function, value - 2 * h)) / (2 * h)
     else:
         result = (-poly.compute_polynomial(function, value + 2 * h) + 8 * poly.compute_polynomial(function, value + h) -
                   8 * poly.compute_polynomial(function, value - h) + poly.compute_polynomial(function, value - 2 * h)) \
-                 / 12 * h
+                 / (12 * h)
     return result
 
 
@@ -60,7 +60,7 @@ def approximate_second_derivate(value, function, h=pow(10, -5)):
     """
     return (-poly.compute_polynomial(function, value + 2 * h) + 16 * poly.compute_polynomial(function, value + h) -
             30 * poly.compute_polynomial(function, value) + 16 * poly.compute_polynomial(function, value - h) -
-            poly.compute_polynomial(function, value - 2 * h)) / 12 * (h ** 2)
+            poly.compute_polynomial(function, value - 2 * h)) / (12 * (h ** 2))
 
 
 def compute_delta_x(value, function):
@@ -79,12 +79,13 @@ def compute_delta_x(value, function):
     return delta_x
 
 
-def steffensen_method(path, max_iterations=1000, interval=10000):
+def steffensen_method(path, max_iterations=5000, interval=10):
     function, expected_output = get_input(path)
     iteration = 1
     x_previous = random.randint(a=-interval, b=interval)
     x_current = x_previous
     if abs(approximate_first_derivate(x_current, function)) <= epsilon:
+        print(abs(approximate_first_derivate(x_current, function)))
         return x_current, [abs(x_current - output) for output in expected_output]
     delta_x = compute_delta_x(x_previous, function)
     if abs(delta_x) < epsilon:
